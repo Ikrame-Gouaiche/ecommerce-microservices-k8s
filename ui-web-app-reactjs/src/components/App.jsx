@@ -31,8 +31,7 @@ const App = () => {
 
 
   const handleApiCall = async (e) => {
-    let url = 'http://'+details.IPv4+':32470/'+e.target.name
-    console.log(details.IPv4)
+    let url = 'http://localhost:9999/'+e.target.name
     console.log(url)
     displayData.url=url
     if(url){

@@ -18,6 +18,9 @@ def hello():
    y = json.dumps(x)
    return y
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=1003)
+
 
 @app.route('/likes', methods = ['GET'])
 def likes():
