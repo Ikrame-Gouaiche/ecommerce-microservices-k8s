@@ -1,0 +1,26 @@
+{{- range $name, $service := .Values.microservices }}
+{{- if $service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $service.name }}
+  labels:
+    app: {{ $service.name }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    release: {{ $.Release.Name }}
+spec:
+  type: {{ $service.service.type }}
+  ports:
+    - port: {{ $service.service.port }}
+      targetPort: {{ $service.service.targetPort }}
+      protocol: TCP
+      name: http
+      {{- if and (eq $service.service.type "NodePort") ($service.service.nodePort) }}
+      nodePort: {{ $service.service.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ $service.name }}
+{{- end }}
+{{- end }}
+
