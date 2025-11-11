@@ -58,7 +58,7 @@ const App = () => {
   return (
     <>
       <header className="pv5 bg-gold black-80">
-        <h1 className="mt0 mb1 tc">Web App</h1>
+        <h1 className="mt0 mb1 tc">Web App Updated</h1>
         <div className="tc ttc">microservices-architect-config-starter</div>
         <div className="tc ttc">Sample Microservice calls</div>
       </header>
