@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chartmuseum
+  labels:
+    app: chartmuseum
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chartmuseum
+  template:
+    metadata:
+      labels:
+        app: chartmuseum
+    spec:
+      containers:
+      - name: chartmuseum
+        image: ghcr.io/helm/chartmuseum:v0.16.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DEBUG
+          value: "1"
+        - name: STORAGE
+          value: "local"
+        - name: STORAGE_LOCAL_ROOTDIR
+          value: "/charts"
+        - name: DISABLE_API
+          value: "false"
+        - name: ALLOW_OVERWRITE
+          value: "true"
+        - name: PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: charts-storage
+          mountPath: /charts
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: charts-storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmuseum
+  labels:
+    app: chartmuseum
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30800
+    protocol: TCP
+    name: http
+  selector:
+    app: chartmuseum

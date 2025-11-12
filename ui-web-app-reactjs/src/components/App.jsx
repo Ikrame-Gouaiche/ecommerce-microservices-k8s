@@ -31,7 +31,9 @@ const App = () => {
 
 
   const handleApiCall = async (e) => {
-    let url = 'http://localhost:9999/'+e.target.name
+    // Use window.location to dynamically get the host IP
+    const host = window.location.hostname;
+    let url = `http://${host}:30999/${e.target.name}`;
     console.log(url)
     displayData.url=url
     if(url){
