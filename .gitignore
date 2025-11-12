@@ -1,1 +1,36 @@
 conteneurisation.md
+conteneurisation.md
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Node.js artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.eslintcache
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.venv/
+env/
+
+# Java/Maven build output
+target/
+*.class
+
+# Front-end build output
+build/
+dist/
+
+# Logs
+*.log
+
+tree.txt

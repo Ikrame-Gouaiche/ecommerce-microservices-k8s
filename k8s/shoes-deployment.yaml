@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shoes
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shoes
+  template:
+    metadata:
+      labels:
+        app: shoes
+    spec:
+      containers:
+        - name: shoes
+          image: ecommerce-microservices-k8s-shoe:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1002

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zuul
+  template:
+    metadata:
+      labels:
+        app: zuul
+    spec:
+      containers:
+        - name: zuul
+          image: ecommerce-microservices-k8s-zuul:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9999

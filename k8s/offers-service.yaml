@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: offers
+  namespace: ecommerce
+spec:
+  type: ClusterIP
+  selector:
+    app: offers
+  ports:
+    - port: 1001
+      targetPort: 1001
