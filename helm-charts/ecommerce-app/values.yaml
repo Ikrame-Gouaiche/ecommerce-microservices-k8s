@@ -1,0 +1,332 @@
+# Global settings
+global:
+  imagePullPolicy: IfNotPresent
+
+# Define all 6 microservices
+microservices:
+  offers:
+    enabled: true
+    name: offers
+    image:
+      repository: ecommerce-microservices-k8s-offers
+      tag: latest
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 1001
+      targetPort: 1001
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    # Autoscaling configuration (Horizontal Pod Autoscaler)
+    autoscaling:
+      enabled: false  # Set to true to enable autoscaling
+      minReplicas: 2  # Minimum number of pods (for high availability)
+      maxReplicas: 10 # Maximum number of pods (scale limit)
+      targetCPUUtilizationPercentage: 80  # Scale when CPU > 80%
+      targetMemoryUtilizationPercentage: 80  # Scale when Memory > 80%
+      # Fine-grained scaling behavior control
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0  # Scale up immediately
+          selectPolicy: "Max"  # Use policy that adds most pods
+          policies:
+            pods:
+              value: 4  # Add up to 4 pods at once
+              periodSeconds: 60  # Per minute
+            percent:
+              value: 100  # Or double the pods (100%)
+              periodSeconds: 60  # Per minute
+        scaleDown:
+          stabilizationWindowSeconds: 300  # Wait 5 min before scale down
+          selectPolicy: "Min"  # Use policy that removes fewest pods
+          policies:
+            pods:
+              value: 1  # Remove max 1 pod at a time
+              periodSeconds: 60  # Per minute
+            percent:
+              value: 10  # Or remove 10% of pods
+              periodSeconds: 60  # Per minute
+    
+  shoes:
+    enabled: true
+    name: shoe
+    image:
+      repository: ecommerce-microservices-k8s-shoes
+      tag: latest
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 1002
+      targetPort: 1002
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    # Autoscaling configuration
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          selectPolicy: "Max"
+          policies:
+            pods:
+              value: 4
+              periodSeconds: 60
+            percent:
+              value: 100
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          selectPolicy: "Min"
+          policies:
+            pods:
+              value: 1
+              periodSeconds: 60
+            percent:
+              value: 10
+              periodSeconds: 60
+  
+  wishlist:
+    enabled: true
+    name: wishlist
+    image:
+      repository: ecommerce-microservices-k8s-wishlist
+      tag: latest
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 1003
+      targetPort: 1003
+    resources:
+      limits:
+        cpu: 300m
+        memory: 256Mi
+      requests:
+        cpu: 150m
+        memory: 128Mi
+    # Autoscaling configuration
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPUUtilizationPercentage: 75
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          selectPolicy: "Max"
+          policies:
+            pods:
+              value: 3
+              periodSeconds: 60
+            percent:
+              value: 100
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          selectPolicy: "Min"
+          policies:
+            pods:
+              value: 1
+              periodSeconds: 60
+            percent:
+              value: 10
+              periodSeconds: 60
+  
+  cart:
+    enabled: true
+    name: cart
+    image:
+      repository: ecommerce-microservices-k8s-cart
+      tag: latest
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 1004
+      targetPort: 1004
+    resources:
+      limits:
+        cpu: 300m
+        memory: 256Mi
+      requests:
+        cpu: 150m
+        memory: 128Mi
+    # Autoscaling configuration
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPUUtilizationPercentage: 75
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          selectPolicy: "Max"
+          policies:
+            pods:
+              value: 3
+              periodSeconds: 60
+            percent:
+              value: 100
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          selectPolicy: "Min"
+          policies:
+            pods:
+              value: 1
+              periodSeconds: 60
+            percent:
+              value: 10
+              periodSeconds: 60
+  
+  zuul:
+    enabled: true
+    name: zuul
+    image:
+      repository: ecommerce-microservices-k8s-zuul
+      tag: latest
+    replicaCount: 1
+    service:
+      type: NodePort
+      port: 9999
+      targetPort: 9999
+      nodePort: 30999  # Fixed port for easy access
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    # Autoscaling configuration for API Gateway
+    # Critical service - requires careful tuning
+    autoscaling:
+      enabled: false
+      minReplicas: 2  # At least 2 for high availability
+      maxReplicas: 6  # API gateways are resource-intensive
+      targetCPUUtilizationPercentage: 70  # Lower threshold for gateway
+      targetMemoryUtilizationPercentage: 75
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          selectPolicy: "Max"
+          policies:
+            pods:
+              value: 2  # Scale gateway faster
+              periodSeconds: 60
+            percent:
+              value: 50  # 50% increase
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 600  # Wait 10 min (gateway is critical)
+          selectPolicy: "Min"
+          policies:
+            pods:
+              value: 1
+              periodSeconds: 120  # Slower scale down
+            percent:
+              value: 10
+              periodSeconds: 120
+  
+  ui:
+    enabled: true
+    name: ui
+    image:
+      repository: ecommerce-microservices-k8s-ui
+      tag: v3
+    replicaCount: 1
+    service:
+      type: NodePort  # External access
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080  # Fixed port for easy access
+    resources:
+      limits:
+        cpu: 300m
+        memory: 512Mi
+      requests:
+        cpu: 150m
+        memory: 256Mi
+    # Autoscaling configuration for UI
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 5  # UI is lightweight, doesn't need many replicas
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          selectPolicy: "Max"
+          policies:
+            pods:
+              value: 2
+              periodSeconds: 60
+            percent:
+              value: 100
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          selectPolicy: "Min"
+          policies:
+            pods:
+              value: 1
+              periodSeconds: 60
+            percent:
+              value: 10
+              periodSeconds: 60
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/upstream-vhost: "192.168.49.2:30080"
+  hosts:
+    - host: ensa.com
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: ui
+          servicePort: 8080
+        - path: /api/offers
+          pathType: Prefix
+          serviceName: offers
+          servicePort: 1001
+        - path: /api/shoes
+          pathType: Prefix
+          serviceName: shoe
+          servicePort: 1002
+        - path: /api/cart
+          pathType: Prefix
+          serviceName: cart
+          servicePort: 1004
+        - path: /api/wishlist
+          pathType: Prefix
+          serviceName: wishlist
+          servicePort: 1003
+        - path: /api
+          pathType: Prefix
+          serviceName: zuul
+          servicePort: 30999
+  tls: []
+  # Uncomment to enable TLS
+  # tls:
+  #   - secretName: ensa-tls
+  #     hosts:
+  #       - ensa.com
