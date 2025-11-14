@@ -24,34 +24,34 @@ microservices:
         memory: 256Mi
     # Autoscaling configuration (Horizontal Pod Autoscaler)
     autoscaling:
-      enabled: false  # Set to true to enable autoscaling
-      minReplicas: 2  # Minimum number of pods (for high availability)
+      enabled: false # Set to true to enable autoscaling
+      minReplicas: 2 # Minimum number of pods (for high availability)
       maxReplicas: 10 # Maximum number of pods (scale limit)
-      targetCPUUtilizationPercentage: 80  # Scale when CPU > 80%
-      targetMemoryUtilizationPercentage: 80  # Scale when Memory > 80%
+      targetCPUUtilizationPercentage: 80 # Scale when CPU > 80%
+      targetMemoryUtilizationPercentage: 80 # Scale when Memory > 80%
       # Fine-grained scaling behavior control
       behavior:
         scaleUp:
-          stabilizationWindowSeconds: 0  # Scale up immediately
-          selectPolicy: "Max"  # Use policy that adds most pods
+          stabilizationWindowSeconds: 0 # Scale up immediately
+          selectPolicy: "Max" # Use policy that adds most pods
           policies:
             pods:
-              value: 4  # Add up to 4 pods at once
-              periodSeconds: 60  # Per minute
+              value: 4 # Add up to 4 pods at once
+              periodSeconds: 60 # Per minute
             percent:
-              value: 100  # Or double the pods (100%)
-              periodSeconds: 60  # Per minute
+              value: 100 # Or double the pods (100%)
+              periodSeconds: 60 # Per minute
         scaleDown:
-          stabilizationWindowSeconds: 300  # Wait 5 min before scale down
-          selectPolicy: "Min"  # Use policy that removes fewest pods
+          stabilizationWindowSeconds: 300 # Wait 5 min before scale down
+          selectPolicy: "Min" # Use policy that removes fewest pods
           policies:
             pods:
-              value: 1  # Remove max 1 pod at a time
-              periodSeconds: 60  # Per minute
+              value: 1 # Remove max 1 pod at a time
+              periodSeconds: 60 # Per minute
             percent:
-              value: 10  # Or remove 10% of pods
-              periodSeconds: 60  # Per minute
-    
+              value: 10 # Or remove 10% of pods
+              periodSeconds: 60 # Per minute
+
   shoes:
     enabled: true
     name: shoe
@@ -98,7 +98,7 @@ microservices:
             percent:
               value: 10
               periodSeconds: 60
-  
+
   wishlist:
     enabled: true
     name: wishlist
@@ -145,7 +145,7 @@ microservices:
             percent:
               value: 10
               periodSeconds: 60
-  
+
   cart:
     enabled: true
     name: cart
@@ -192,7 +192,7 @@ microservices:
             percent:
               value: 10
               periodSeconds: 60
-  
+
   zuul:
     enabled: true
     name: zuul
@@ -204,7 +204,7 @@ microservices:
       type: NodePort
       port: 9999
       targetPort: 9999
-      nodePort: 30999  # Fixed port for easy access
+      nodePort: 30999 # Fixed port for easy access
     resources:
       limits:
         cpu: 1000m
@@ -216,9 +216,9 @@ microservices:
     # Critical service - requires careful tuning
     autoscaling:
       enabled: false
-      minReplicas: 2  # At least 2 for high availability
-      maxReplicas: 6  # API gateways are resource-intensive
-      targetCPUUtilizationPercentage: 70  # Lower threshold for gateway
+      minReplicas: 2 # At least 2 for high availability
+      maxReplicas: 6 # API gateways are resource-intensive
+      targetCPUUtilizationPercentage: 70 # Lower threshold for gateway
       targetMemoryUtilizationPercentage: 75
       behavior:
         scaleUp:
@@ -226,22 +226,22 @@ microservices:
           selectPolicy: "Max"
           policies:
             pods:
-              value: 2  # Scale gateway faster
+              value: 2 # Scale gateway faster
               periodSeconds: 60
             percent:
-              value: 50  # 50% increase
+              value: 50 # 50% increase
               periodSeconds: 60
         scaleDown:
-          stabilizationWindowSeconds: 600  # Wait 10 min (gateway is critical)
+          stabilizationWindowSeconds: 600 # Wait 10 min (gateway is critical)
           selectPolicy: "Min"
           policies:
             pods:
               value: 1
-              periodSeconds: 120  # Slower scale down
+              periodSeconds: 120 # Slower scale down
             percent:
               value: 10
               periodSeconds: 120
-  
+
   ui:
     enabled: true
     name: ui
@@ -250,10 +250,10 @@ microservices:
       tag: v3
     replicaCount: 1
     service:
-      type: NodePort  # External access
+      type: NodePort # External access
       port: 8080
       targetPort: 8080
-      nodePort: 30080  # Fixed port for easy access
+      nodePort: 30080 # Fixed port for easy access
     resources:
       limits:
         cpu: 300m
@@ -265,7 +265,7 @@ microservices:
     autoscaling:
       enabled: false
       minReplicas: 2
-      maxReplicas: 5  # UI is lightweight, doesn't need many replicas
+      maxReplicas: 5 # UI is lightweight, doesn't need many replicas
       targetCPUUtilizationPercentage: 80
       targetMemoryUtilizationPercentage: 80
       behavior:
